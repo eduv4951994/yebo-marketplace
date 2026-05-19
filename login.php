@@ -1,6 +1,6 @@
 <?php
 // ATTACH THE LIVE CONNECTION
-require_once 'includes/connect_dp.php';
+require_once 'includes/connect_db.php';
 
 // Start a session to remember who logs in across different browser pages
 session_start();

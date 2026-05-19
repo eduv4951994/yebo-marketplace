@@ -1,6 +1,6 @@
 <?php
 // ATTACH THE LIVE SECURITY CHECK AND CONNECTION
-require_once 'includes/connect_dp.php';
+require_once 'includes/connect_db.php';
 require_once 'includes/auth.php';
 
 // Force the browser to verify the user is logged in. 
