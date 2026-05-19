@@ -1,6 +1,6 @@
 <?php
 // DATABASE CREDENTIALS (Your Live InfinityFree Details)
-$host = "	sql105.infinityfree.com"; // MySQL hostname 
+$host = "sql105.infinityfree.com"; // MySQL hostname 
 $dbname = "if0_41963119_yebo_db";     // Database name
 $username = "if0_41963119";       // MySQL username
 $password = "WIsx25BYpi";   // InfinityFree account password
