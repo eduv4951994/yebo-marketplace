@@ -1,6 +1,6 @@
 <?php
 // ATTACH DATABASE & START SESSION
-require_once 'includes/db_connect.php';
+require_once 'includes/connect_db.php';
 session_start();
 
 // FETCH ALL PRODUCTS FROM THE DATABASE

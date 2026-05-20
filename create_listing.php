@@ -1,5 +1,5 @@
 <?php
-// 1. ATTACH DATABASE & SECURITY GATE
+// ATTACH DATABASE & SECURITY GATE
 require_once 'includes/connect_db.php';
 require_once 'includes/auth.php';
 
@@ -15,7 +15,7 @@ if ($_SESSION['user_role'] !== 'Seller') {
 $success = "";
 $error = "";
 
-// 2. PROCESS FORM SUBMISSION
+// PROCESS FORM SUBMISSION
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title       = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
