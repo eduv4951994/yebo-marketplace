@@ -1,0 +1,36 @@
+/* GLOBAL STYLES */
+/* Mobile-Responsive Layout Rules */
+.product-grid { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+}
+
+.product-card { 
+    border: 1px solid #ccc; 
+    padding: 15px; 
+    border-radius: 8px; 
+    width: 100%; 
+    max-width: 300px; 
+    background: #f9f9f9; 
+    box-sizing: border-box;
+}
+
+.price { color: green; font-size: 1.2em; font-weight: bold; }
+.seller-badge { font-size: 0.8em; color: #666; }
+
+/* Contact Seller Button */
+.btn-contact-seller {
+    display: block;
+    text-align: center;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 15px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-family: sans-serif;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

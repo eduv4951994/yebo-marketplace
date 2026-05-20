@@ -5,8 +5,8 @@ session_start();
 
 // FETCH ALL PRODUCTS FROM THE DATABASE
 try {
-    // We use a JOIN to grab the product details AND the seller's username at the same time
-    $sql = "SELECT products.*, users.username AS seller_name 
+    // We grab the product details, plus the seller's username and email
+    $sql = "SELECT products.*, users.username AS seller_name, users.email AS seller_email 
             FROM products 
             JOIN users ON products.seller_id = users.id 
             ORDER BY products.created_at DESC";
@@ -21,20 +21,16 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YEBO Marketplace - Home</title>
-    <style>
-        /* A little bit of CSS to make the products look like actual store cards */
-        .product-grid { display: flex; flex-wrap: wrap; gap: 20px; }
-        .product-card { border: 1px solid #ccc; padding: 15px; border-radius: 8px; width: 250px; background: #f9f9f9; }
-        .price { color: green; font-size: 1.2em; font-weight: bold; }
-        .seller-badge { font-size: 0.8em; color: #666; }
-    </style>
+    
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-    <div style="padding-bottom: 20px; border-bottom: 2px solid #eee; margin-bottom: 20px;">
-        <h1 style="display: inline;">Welcome to YEBO Marketplace</h1>
-        <div style="float: right; margin-top: 20px;">
+    <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 2px solid #eee; margin-bottom: 20px;">
+        <h1>YEBO Marketplace</h1>
+        <div>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="dashboard.php">My Dashboard</a> | 
                 <a href="logout.php">Log Out</a>
@@ -55,7 +51,21 @@ try {
                     <p class="price">R <?php echo number_format($item['price'], 2); ?></p>
                     <p><?php echo htmlspecialchars($item['description']); ?></p>
                     <p class="seller-badge">Listed by: <?php echo htmlspecialchars($item['seller_name']); ?></p>
-                    <button>Message Seller</button>
+                    
+                    <?php
+                        // Prepare the email data cleanly using variables
+                        $safe_email = htmlspecialchars($item['seller_email']);
+                        $safe_title = urlencode($item['title']);
+                        $subject    = "Interested in your YEBO listing: " . $safe_title;
+                        
+                        // Build the final mailto link
+                        $mailto_link = "mailto:" . $safe_email . "?subject=" . $subject;
+                    ?>
+                    
+                    <a href="<?php echo $mailto_link; ?>" class="btn-contact-seller">
+                        👋 Say Hello to the Seller
+                    </a>
+
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
