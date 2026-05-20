@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/db_connect.php';
+require_once 'includes/connect_db.php';
 require_once 'includes/auth.php';
 
 // Secure the page - kick out anyone not logged in
