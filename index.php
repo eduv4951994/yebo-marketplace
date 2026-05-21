@@ -47,18 +47,20 @@ try {
         <?php if (count($products) > 0): ?>
             <?php foreach ($products as $item): ?>
                 <div class="product-card">
+                    
+                    <img src="<?php echo htmlspecialchars($item['image_path']); ?>" 
+                         alt="<?php echo htmlspecialchars($item['title']); ?>" 
+                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
+
                     <h3><?php echo htmlspecialchars($item['title']); ?></h3>
                     <p class="price">R <?php echo number_format($item['price'], 2); ?></p>
                     <p><?php echo htmlspecialchars($item['description']); ?></p>
                     <p class="seller-badge">Listed by: <?php echo htmlspecialchars($item['seller_name']); ?></p>
                     
                     <?php
-                        // Prepare the email data cleanly using variables
                         $safe_email = htmlspecialchars($item['seller_email']);
                         $safe_title = urlencode($item['title']);
                         $subject    = "Interested in your YEBO listing: " . $safe_title;
-                        
-                        // Build the final mailto link
                         $mailto_link = "mailto:" . $safe_email . "?subject=" . $subject;
                     ?>
                     
