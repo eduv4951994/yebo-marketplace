@@ -23,6 +23,7 @@ CREATE TABLE products (
     title VARCHAR(100) NOT NULL,
     description TEXT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
+    ADD COLUMN image_path VARCHAR(255) DEFAULT 'uploads/default.png';
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
 );
