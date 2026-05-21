@@ -1,6 +1,6 @@
 <?php
 // SETUP & AUTHENTICATION
-require_once 'includes/db_connect.php';
+require_once 'includes/connect_db.php';
 require_once 'includes/auth.php';
 check_login();
 
