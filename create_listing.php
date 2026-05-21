@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $price       = trim($_POST['price']);
     
     // Set a default image path just in case they don't upload one
-    $final_image_path = "uploads/default.png";
+    $final_image_path = "assets/uploads/default.png";
 
     // HANDLE THE IMAGE UPLOAD LOGIC
     // Check if a file was actually uploaded and has no errors
