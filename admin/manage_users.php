@@ -1,5 +1,5 @@
 <?php
-// 1. ROUTING & SECURITY CHECK
+// ROUTING & SECURITY CHECK
 require_once '../includes/connect_db.php';
 require_once '../includes/auth.php';
 
@@ -14,7 +14,7 @@ if ($_SESSION['user_role'] !== 'Admin') {
 $admin_id = $_SESSION['user_id'];
 $all_users = [];
 
-// 2. PROCESS ROLE UPDATE ACTION (Aligned to 'role' column)
+// PROCESS ROLE UPDATE ACTION (Aligned to 'role' column)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_role_user_id'])) {
     $target_user_id = $_POST['update_role_user_id'];
     $new_role       = $_POST['new_role'];
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_role_user_id'])
     }
 }
 
-// 3. PROCESS USER DELETION ACTION
+// PROCESS USER DELETION ACTION
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_user_id'])) {
     $delete_user_id = $_POST['delete_user_id'];
 
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_user_id'])) {
     }
 }
 
-// 4. FETCH ALL USERS FROM THE DATABASE (Aligned to 'username' and 'role')
+// FETCH ALL USERS FROM THE DATABASE (Aligned to 'username' and 'role')
 try {
     $sql = "SELECT id, username, role, created_at FROM users ORDER BY created_at DESC";
     $stmt = $pdo->query($sql);

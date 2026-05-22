@@ -1,5 +1,5 @@
 <?php
-// 1. ROUTING & SECURITY CHECK
+// ROUTING & SECURITY CHECK
 require_once '../includes/connect_db.php';
 require_once '../includes/auth.php';
 
@@ -14,7 +14,7 @@ if ($_SESSION['user_role'] !== 'Admin') {
 $admin_name = $_SESSION['username'] ?? $_SESSION['user_name'] ?? 'Admin';
 $all_products = [];
 
-// 2. FETCH EVERY SINGLE LISTING ON THE PLATFORM (Aligned to use 'username')
+// FETCH EVERY SINGLE LISTING ON THE PLATFORM (Aligned to use 'username')
 try {
     $sql = "SELECT products.*, users.username AS seller_name 
             FROM products 
@@ -27,7 +27,7 @@ try {
     die("Error loading marketplace catalog: " . $e->getMessage());
 }
 
-// 3. PROCESS ADMIN DELETE ACTION
+// PROCESS ADMIN DELETE ACTION
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['admin_delete_id'])) {
     $delete_id = $_POST['admin_delete_id'];
     try {
