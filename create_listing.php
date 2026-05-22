@@ -39,14 +39,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             // Create a unique file name so "iphone.jpg" doesn't overwrite someone else's "iphone.jpg"
             $new_file_name = uniqid("yebo_", true) . "." . $file_extension;
-            $upload_destination = "uploads/" . $new_file_name;
+            $upload_destination = "assets/uploads/" . $new_file_name;
 
             // Move the file from a temporary server location to our official uploads folder
             if (move_uploaded_file($file_tmp_name, $upload_destination)) {
                 // Success! Update our database variable to point to the new file
                 $final_image_path = $upload_destination;
             } else {
-                if (!is_dir('uploads')){
+                if (!is_dir('assets/uploads')){
                     $error = "Upload failed: The 'uploads' folder does not exist inside htdocs! Please create it.";
                 }else{
                     $error = "Upload failed: The folder exists, but the file size might be too large (Max 2MB).";

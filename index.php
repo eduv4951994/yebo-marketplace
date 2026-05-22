@@ -65,7 +65,7 @@ try {
                     ?>
                     
                     <a href="<?php echo $mailto_link; ?>" class="btn-contact-seller">
-                        👋 Say Hello to the Seller
+                        Contact Seller
                     </a>
 
                 </div>
