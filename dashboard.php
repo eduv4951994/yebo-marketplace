@@ -77,6 +77,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_product_id'])) 
                             <td>R <?php echo number_format($item['price'], 2); ?></td>
                             <td><?php echo $item['created_at']; ?></td>
                             <td>
+                                <a href="edit_listing.php?id=<?php echo $item['id']; ?>" 
+                                   style="background-color: #007bff; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; display: inline-block; font-size: 14px; margin-right: 5px;">
+                                   Edit
+                                </a>
                                 <form action="dashboard.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this listing permanently?');" style="display:inline;">
                                     <input type="hidden" name="delete_product_id" value="<?php echo $item['id']; ?>">
                                     <button type="submit" style="color: red; cursor: pointer;">Delete</button>
