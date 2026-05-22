@@ -46,7 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Success! Update our database variable to point to the new file
                 $final_image_path = $upload_destination;
             } else {
-                $error = "Failed to move the uploaded file. Check folder permissions.";
+                if (!is_dir('uploads')){
+                    $error = "Upload failed: The 'uploads' folder does not exist inside htdocs! Please create it.";
+                }else{
+                    $error = "Upload failed: The folder exists, but the file size might be too large (Max 2MB).";
+                }
             }
         } else {
             $error = "Invalid file type. Only JPG, PNG, and WEBP are allowed.";
