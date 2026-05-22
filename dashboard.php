@@ -6,7 +6,7 @@ require_once 'includes/auth.php';
 check_login();
 
 $user_id = $_SESSION['user_id'];
-$username = $_SESSION['user_name'];
+$username = $_SESSION['username'];
 $user_role = $_SESSION['user_role'];
 
 $my_products = [];

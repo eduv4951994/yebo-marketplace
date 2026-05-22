@@ -2,6 +2,7 @@
 
 -- DROP TABLES IF THEY EXIST TO ENSURE A CLEAN RESET DURING TESTING
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS users;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -23,13 +24,13 @@ CREATE TABLE products (
     title VARCHAR(100) NOT NULL,
     description TEXT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    ADD COLUMN image_path VARCHAR(255) DEFAULT 'uploads/default.png';
+    image_path VARCHAR(255) DEFAULT 'assets/uploads/default.png',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- CREATE MESSEAGES TABLE (Messages between buyer and seller)
-CREATE TABLE IF NOT EXISTS messages (
+-- CREATE MESSAGES TABLE (Messages between buyer and seller)
+CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     sender_id INT NOT NULL,
     receiver_id INT NOT NULL,
