@@ -3,12 +3,13 @@
 require_once 'includes/connect_db.php';
 session_start();
 
-// FETCH ALL PRODUCTS FROM THE DATABASE
+// FETCH ALL AVAILABLE PRODUCTS FROM THE DATABASE
 try {
-    // We grab the product details, plus the seller's username and email
+    // We added the WHERE clause here to hide sold items!
     $sql = "SELECT products.*, users.username AS seller_name, users.email AS seller_email 
             FROM products 
             JOIN users ON products.seller_id = users.id 
+            WHERE products.status = 'Available'
             ORDER BY products.created_at DESC";
     $stmt = $pdo->query($sql);
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -26,7 +27,7 @@ try {
     
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body>
+<body style="padding: 20px; font-family: Arial, sans-serif;">
 
     <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 2px solid #eee; margin-bottom: 20px;">
         <h1>YEBO Marketplace</h1>
@@ -43,35 +44,29 @@ try {
 
     <h2>Latest Listings</h2>
 
-    <div class="product-grid">
+    <div class="product-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
         <?php if (count($products) > 0): ?>
             <?php foreach ($products as $item): ?>
-                <div class="product-card">
+                <div class="product-card" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; width: 300px;">
                     
                     <img src="<?php echo htmlspecialchars($item['image_path']); ?>" 
                          alt="<?php echo htmlspecialchars($item['title']); ?>" 
                          style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
 
-                    <h3><?php echo htmlspecialchars($item['title']); ?></h3>
-                    <p class="price">R <?php echo number_format($item['price'], 2); ?></p>
-                    <p><?php echo htmlspecialchars($item['description']); ?></p>
-                    <p class="seller-badge">Listed by: <?php echo htmlspecialchars($item['seller_name']); ?></p>
+                    <h3 style="margin: 0 0 10px 0;"><?php echo htmlspecialchars($item['title']); ?></h3>
+                    <p class="price" style="font-size: 18px; color: #28a745; font-weight: bold; margin: 0 0 10px 0;">R <?php echo number_format($item['price'], 2); ?></p>
                     
-                    <?php
-                        $safe_email = htmlspecialchars($item['seller_email']);
-                        $safe_title = urlencode($item['title']);
-                        $subject    = "Interested in your YEBO listing: " . $safe_title;
-                        $mailto_link = "mailto:" . $safe_email . "?subject=" . $subject;
-                    ?>
+                    <p style="color: #555; height: 40px; overflow: hidden;"><?php echo htmlspecialchars($item['description']); ?></p>
+                    <p class="seller-badge" style="font-size: 14px; color: #888;">Listed by: <?php echo htmlspecialchars($item['seller_name']); ?></p>
                     
-                    <a href="<?php echo $mailto_link; ?>" class="btn-contact-seller">
-                        Contact Seller
+                    <a href="view_listings.php?id=<?php echo $item['id']; ?>" class="btn-contact-seller" style="display: block; text-align: center; background: #007bff; color: white; padding: 10px; text-decoration: none; border-radius: 5px; margin-top: 15px; font-weight: bold;">
+                        View Details & Buy
                     </a>
 
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p>The marketplace is currently empty. Be the first to list an item!</p>
+            <p style="background: #f4f4f4; padding: 20px; border-radius: 5px;">The marketplace is currently empty, or all items have been sold. Check back later!</p>
         <?php endif; ?>
     </div>
 
