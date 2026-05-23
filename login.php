@@ -51,31 +51,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>YEBO Marketplace - Log In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YEBO - Log In</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .auth-card { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .auth-card h2 { text-align: center; color: #333; margin-bottom: 20px; font-size: 28px; }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group label { display: block; margin-bottom: 5px; color: #555; font-size: 14px; font-weight: bold; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; outline: none; }
+        .input-group input:focus { border-color: #007bff; }
+        .btn-primary { width: 100%; padding: 14px; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { background: #0056b3; }
+        .toggle-password { position: absolute; right: 12px; top: 35px; cursor: pointer; font-size: 14px; color: #007bff; font-weight: bold; user-select: none; }
+        .auth-links { text-align: center; margin-top: 15px; font-size: 14px; }
+        .auth-links a { color: #007bff; text-decoration: none; }
+    </style>
 </head>
 <body>
 
-    <h2>Log In to Your Account</h2>
+    <div class="auth-card">
+        <h2>Welcome Back</h2>
+        
+        <form action="login.php" method="POST">
+            
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" name="email" required>
+            </div>
 
-    <?php if (!empty($error)): ?>
-        <p style="color: red; font-weight: bold;"><?php echo htmlspecialchars($error); ?></p>
-    <?php endif; ?>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" id="login_password" required>
+                <span class="toggle-password" id="toggleLogin" onclick="togglePassword('login_password', 'toggleLogin')">Show</span>
+            </div>
 
-    <form action="login.php" method="POST">
-        <div>
-            <label>Email Address:</label><br>
-            <input type="email" name="email" required>
-        </div><br>
+            <button type="submit" class="btn-primary">Log In</button>
+        </form>
 
-        <div>
-            <label>Password:</label><br>
-            <input type="password" name="password" required>
-        </div><br>
+        <div class="auth-links">
+            <p>Don't have an account? <a href="register.php">Sign Up</a></p>
+            <p><a href="index.php">← Back to Storefront</a></p>
+        </div>
+    </div>
 
-        <button type="submit">Log In</button>
-    </form>
-
-    <p>New to YEBO? <a href="register.php">Register an account here</a></p>
-
+    <script src="assets/js/scripts.js"></script>
 </body>
 </html>
