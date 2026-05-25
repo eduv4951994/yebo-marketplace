@@ -1,53 +1,28 @@
 <?php
-// ATTACH DATABASE & SYSTEM SECURITY
 require_once 'includes/connect_db.php';
-require_once 'includes/auth.php';
+session_start();
 
-// Check if a product ID was passed in the URL 
+// 1. Make sure we actually have an ID in the URL
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    die("Error: Product ID is missing.");
+    die("Product ID is missing.");
 }
 $product_id = $_GET['id'];
 
-// PROCESS THE SIMULATED PURCHASE 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['buy_item'])) {
-    // Force them to log in before they can buy anything
-    check_login(); 
-    
-    try {
-        // Change the status column from 'Available' to 'Sold'
-        $buy_sql = "UPDATE products SET status = 'Sold' WHERE id = :id";
-        $buy_stmt = $pdo->prepare($buy_sql);
-        $buy_stmt->execute(['id' => $product_id]);
-        
-        // Pop up a clean success alert and send them back to the storefront
-        echo "<script>
-                alert('Purchase Successful! You have successfully simulated buying this item.'); 
-                window.location.href='index.php';
-              </script>";
-        exit();
-    } catch (PDOException $e) {
-        die("Purchase transaction failed: " . $e->getMessage());
-    }
-}
-
-// FETCH THE SPECIFIC PRODUCT DETAILS FOR DISPLAY 
+// 2. Fetch the product AND the seller's username using a JOIN
 try {
-    // Join with users table to get the sellers username
-    $sql = "SELECT products.*, users.username AS seller_name 
-            FROM products 
-            JOIN users ON products.seller_id = users.id 
-            WHERE products.id = :id";
+    $sql = "SELECT p.*, u.username 
+            FROM products p 
+            JOIN users u ON p.seller_id = u.id 
+            WHERE p.id = ?";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['id' => $product_id]);
+    $stmt->execute([$product_id]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    // If the ID doesn't match anything in the database
+
     if (!$product) {
-        die("Error: This marketplace item no longer exists.");
+        die("This product does not exist or has been removed.");
     }
 } catch (PDOException $e) {
-    die("Error loading item details: " . $e->getMessage());
+    die("Error loading product: " . $e->getMessage());
 }
 ?>
 
@@ -56,56 +31,96 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($product['title']); ?> - YEBO Marketplace</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <title><?php echo htmlspecialchars($product['title']); ?> - YEBO</title>
+    
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?php echo time(); ?>">
 </head>
-<body style="padding: 20px; font-family: Arial, sans-serif;">
+<body>
 
-    <div style="margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 15px;">
-        <p><a href="index.php" style="font-weight: bold; text-decoration: none; color: #007bff;">← Back to Storefront Marketplace</a></p>
+    <div class="navbar">
+        <h1> YEBO Marketplace</h1>
+        <div class="nav-links">
+            <a href="index.php" style="margin-right: 15px; color: #333;">&larr; Back to Home</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="dashboard.php">My Dashboard</a>
+                <a href="logout.php" style="color: #dc3545;">Log Out</a>
+            <?php else: ?>
+                <a href="login.php">Log In</a>
+                <a href="register.php" style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">Sign Up</a>
+            <?php endif; ?>
+        </div>
     </div>
 
-    <div style="display: flex; flex-wrap: wrap; gap: 40px; max-width: 1000px; margin: 0 auto;">
+    <div class="listing-container">
         
-        <div style="flex: 1; min-width: 300px;">
-            <img src="<?php echo htmlspecialchars($product['image_path']); ?>" 
-                 alt="<?php echo htmlspecialchars($product['title']); ?>" 
-                 style="width: 100%; max-height: 450px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-        </div>
-        
-        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <h1 style="margin: 0 0 10px 0; font-size: 32px;"><?php echo htmlspecialchars($product['title']); ?></h1>
-                <p style="font-size: 28px; color: #28a745; font-weight: bold; margin: 0 0 20px 0;">
-                    R <?php echo number_format($product['price'], 2); ?>
-                </p>
-                
-                <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
-                
-                <p style="font-size: 14px; color: #666; margin-bottom: 5px;">Seller Profile:</p>
-                <p style="margin: 0 0 20px 0; font-weight: bold; font-size: 16px;">👤 <?php echo htmlspecialchars($product['seller_name']); ?></p>
-                
-                <p style="font-size: 14px; color: #666; margin-bottom: 5px;">Item Description:</p>
-                <p style="color: #333; line-height: 1.6; font-size: 16px; background: #f9f9f9; padding: 15px; border-radius: 6px;">
-                    <?php echo nl2br(htmlspecialchars($product['description'])); ?>
-                </p>
-            </div>
-            
-            <div style="margin-top: 30px;">
-                <?php if ($product['status'] === 'Sold'): ?>
-                    <div style="background: #dc3545; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 6px; font-size: 18px;">
-                        This item has been sold!
-                    </div>
-                <?php else: ?>
-                    <form action="view_listings.php?id=<?php echo $product['id']; ?>" method="POST" onsubmit="return confirm('Are you sure you want to buy this item? (This simulates a transaction)');">
-                        <button type="submit" name="buy_item" style="width: 100%; background: #007bff; color: white; padding: 15px; border: none; border-radius: 6px; font-size: 18px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,123,255,0.2);">
-                            Buy Now (Simulate Purchase)
-                        </button>
-                    </form>
-                <?php endif; ?>
-            </div>
+        <div class="listing-col">
+            <img src="<?php echo htmlspecialchars($product['image_path']); ?>" alt="Product Image" class="listing-image">
         </div>
 
+        <div class="listing-col">
+            <h1 class="listing-title"><?php echo htmlspecialchars($product['title']); ?></h1>
+            <h2 class="listing-price">R <?php echo number_format($product['price'], 2); ?></h2>
+            
+            <p class="listing-meta">
+                <strong>Listed by:</strong> <?php echo htmlspecialchars($product['username']); ?><br>
+                <strong>Date:</strong> <?php echo date('F j, Y', strtotime($product['created_at'])); ?>
+            </p>
+
+            <hr class="divider">
+            
+            <h3 class="section-title">Description</h3>
+            <p class="description-text">
+                <?php echo nl2br(htmlspecialchars($product['description'])); ?>
+            </p>
+
+            <hr class="divider">
+
+            <h3 class="section-title">Message the Seller</h3>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <textarea rows="4" class="form-input" placeholder="Hi, is this still available?"></textarea>
+                <button class="btn-contact-seller btn-block">Send Message</button>
+            <?php else: ?>
+                <div class="alert-warning">
+                    You must be <a href="login.php">logged in</a> to message sellers.
+                </div>
+            <?php endif; ?>
+
+            <hr class="divider">
+
+            <h3 class="section-title">Rate this Seller</h3>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                
+                <?php if ($_SESSION['user_id'] != $product['seller_id']): ?>
+                    <div class="review-box">
+                        <form action="submit_review.php" method="POST">
+                            <input type="hidden" name="user_reviewed_id" value="<?php echo $product['seller_id']; ?>">
+                            
+                            <label class="form-label">Rating:</label>
+                            <select name="rating" required class="form-input">
+                                <option value="5">⭐⭐⭐⭐⭐ (5/5 - Great)</option>
+                                <option value="4">⭐⭐⭐⭐ (4/5 - Good)</option>
+                                <option value="3">⭐⭐⭐ (3/5 - Okay)</option>
+                                <option value="2">⭐⭐ (2/5 - Poor)</option>
+                                <option value="1">⭐ (1/5 - Terrible)</option>
+                            </select>
+
+                            <label class="form-label">Comment:</label>
+                            <textarea name="review_text" rows="3" required class="form-input" placeholder="How was your experience?"></textarea>
+
+                            <button type="submit" class="btn-contact-seller btn-block btn-blue">Submit Review</button>
+                        </form>
+                    </div>
+                <?php else: ?>
+                    <p class="text-muted">You cannot review your own listing.</p>
+                <?php endif; ?>
+
+            <?php else: ?>
+                <div class="alert-warning">
+                    You must be <a href="login.php">logged in</a> to leave a review.
+                </div>
+            <?php endif; ?>
+
+        </div>
     </div>
 
 </body>
