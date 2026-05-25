@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_product_id'])) 
                             <td>
                                 <?php if ($item['status'] === 'Sold'): ?>
                                     <span style="background: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; display: inline-block;">
-                                        SOLD 🎉
+                                        SOLD 
                                     </span>
                                 <?php else: ?>
                                     <span style="background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; display: inline-block;">

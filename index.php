@@ -1,17 +1,12 @@
 <?php
-// ATTACH DATABASE & START SESSION
 require_once 'includes/connect_db.php';
 session_start();
 
-// FETCH ALL AVAILABLE PRODUCTS FROM THE DATABASE
+// Fetch all active products for the storefront
 try {
-    // We added the WHERE clause here to hide sold items!
-    $sql = "SELECT products.*, users.username AS seller_name, users.email AS seller_email 
-            FROM products 
-            JOIN users ON products.seller_id = users.id 
-            WHERE products.status = 'Available'
-            ORDER BY products.created_at DESC";
-    $stmt = $pdo->query($sql);
+    $sql = "SELECT * FROM products WHERE status = 'Available' ORDER BY created_at DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error loading marketplace: " . $e->getMessage());
@@ -25,48 +20,45 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YEBO Marketplace - Home</title>
     
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?php echo time(); ?>">
 </head>
-<body style="padding: 20px; font-family: Arial, sans-serif;">
+<body>
 
-    <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 2px solid #eee; margin-bottom: 20px;">
+    <div class="navbar">
         <h1>YEBO Marketplace</h1>
-        <div>
+        <div class="nav-links">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="dashboard.php">My Dashboard</a> | 
-                <a href="logout.php">Log Out</a>
+                <a href="dashboard.php">My Dashboard</a>
+                <a href="logout.php" style="color: #dc3545;">Log Out</a>
             <?php else: ?>
-                <a href="login.php">Log In</a> | 
-                <a href="register.php">Sign Up</a>
+                <a href="login.php">Log In</a>
+                <a href="register.php" style="background: #007bff; color: white; padding: 8px 15px; border-radius: 5px;">Sign Up</a>
             <?php endif; ?>
         </div>
     </div>
 
-    <h2>Latest Listings</h2>
-
-    <div class="product-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
+    <div class="product-grid">
         <?php if (count($products) > 0): ?>
             <?php foreach ($products as $item): ?>
-                <div class="product-card" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; width: 300px;">
-                    
-                    <img src="<?php echo htmlspecialchars($item['image_path']); ?>" 
-                         alt="<?php echo htmlspecialchars($item['title']); ?>" 
-                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
+                
+                <div class="product-card">
+                    <img src="<?php echo htmlspecialchars($item['image_path']); ?>" alt="Product Image" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 10px;">
 
-                    <h3 style="margin: 0 0 10px 0;"><?php echo htmlspecialchars($item['title']); ?></h3>
-                    <p class="price" style="font-size: 18px; color: #28a745; font-weight: bold; margin: 0 0 10px 0;">R <?php echo number_format($item['price'], 2); ?></p>
+                    <h2 style="margin-top: 0; font-size: 1.2em;"><?php echo htmlspecialchars($item['title']); ?></h2>
                     
-                    <p style="color: #555; height: 40px; overflow: hidden;"><?php echo htmlspecialchars($item['description']); ?></p>
-                    <p class="seller-badge" style="font-size: 14px; color: #888;">Listed by: <?php echo htmlspecialchars($item['seller_name']); ?></p>
+                    <div class="seller-badge">Listed: <?php echo date('Y-m-d', strtotime($item['created_at'])); ?></div>
+                    <div class="price">R <?php echo number_format($item['price'], 2); ?></div>
                     
-                    <a href="view_listings.php?id=<?php echo $item['id']; ?>" class="btn-contact-seller" style="display: block; text-align: center; background: #007bff; color: white; padding: 10px; text-decoration: none; border-radius: 5px; margin-top: 15px; font-weight: bold;">
-                        View Details & Buy
+                    <a href="view_listings.php?id=<?php echo $item['id']; ?>" class="btn-contact-seller">
+                        View & Contact Seller
                     </a>
-
                 </div>
+
             <?php endforeach; ?>
         <?php else: ?>
-            <p style="background: #f4f4f4; padding: 20px; border-radius: 5px;">The marketplace is currently empty, or all items have been sold. Check back later!</p>
+            <div class="empty-state">
+                <p>No items are currently available for sale. Check back later!</p>
+            </div>
         <?php endif; ?>
     </div>
 

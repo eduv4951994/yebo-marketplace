@@ -66,32 +66,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YEBO - Sign Up</title>
     <style>
-        /* Card Design */
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .auth-card { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        .auth-card h2 { text-align: center; color: #333; margin-bottom: 20px; font-size: 28px; }
-        .input-group { margin-bottom: 20px; position: relative; }
-        .input-group label { display: block; margin-bottom: 5px; color: #555; font-size: 14px; font-weight: bold; }
-        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; outline: none; }
-        .input-group input:focus { border-color: #007bff; }
-        .btn-primary { width: 100%; padding: 14px; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-primary:hover { background: #0056b3; }
-        .toggle-password { position: absolute; right: 12px; top: 35px; cursor: pointer; font-size: 14px; color: #007bff; font-weight: bold; user-select: none; }
-        .error-msg { color: #dc3545; font-size: 13px; display: none; margin-top: 5px; font-weight: bold; }
-        .auth-links { text-align: center; margin-top: 15px; font-size: 14px; }
-        .auth-links a { color: #007bff; text-decoration: none; }
+        body { font-family: Arial, sans-serif; background-color: #f5f4f0; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .auth-card { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); width: 100%; max-width: 400px; }
+        .auth-card h2 { text-align: center; color: #1a1a1a; margin-bottom: 6px; font-size: 24px; letter-spacing: 1px; }
+        .auth-card p.subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+        .input-group { margin-bottom: 18px; position: relative; }
+        .input-group label { display: block; margin-bottom: 5px; color: #444; font-size: 13px; font-weight: bold; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; box-sizing: border-box; outline: none; background: #fafaf8; }
+        .input-group input:focus { border-color: #1a1a1a; background: #fff; }
+        .btn-primary { width: 100%; padding: 13px; background: #1a1a1a; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 4px; }
+        .btn-primary:hover { background: #333; }
+        .toggle-password { position: absolute; right: 12px; top: 36px; cursor: pointer; font-size: 13px; color: #888; font-weight: bold; user-select: none; }
+        .auth-links { text-align: center; margin-top: 18px; font-size: 13px; color: #888; }
+        .auth-links a { color: #1a1a1a; font-weight: bold; text-decoration: none; }
+        .auth-links a:hover { text-decoration: underline; }
+        .msg-error { background: #fff0f0; border: 1px solid #f5c6cb; color: #b04040; font-size: 13px; font-weight: bold; padding: 10px 14px; border-radius: 6px; margin-bottom: 18px; }
+        .msg-success { background: #f0fff4; border: 1px solid #b7dfc5; color: #2e7d32; font-size: 13px; font-weight: bold; padding: 10px 14px; border-radius: 6px; margin-bottom: 18px; }
+        .logo { text-align: center; font-size: 22px; font-weight: bold; letter-spacing: 4px; color: #1a1a1a; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
     <div class="auth-card">
-        <h2>Join YEBO</h2>
-        
-        <form action="register.php" method="POST" id="registerForm" onsubmit="return validateRegistration(event)">
+
+        <div class="logo">YEBO</div>
+        <h2>Create account</h2>
+        <p class="subtitle">Join the marketplace</p>
+
+        <!-- ERROR MESSAGE -->
+        <?php if (!empty($error)): ?>
+            <div class="msg-error"><?php echo $error; ?></div>
+        <?php endif; ?>
+
+        <!-- SUCCESS MESSAGE -->
+        <?php if (!empty($success)): ?>
+            <div class="msg-success">
+                <?php echo $success; ?>
+                <br><a href="login.php" style="color: #2e7d32;">Click here to log in →</a>
+            </div>
+        <?php endif; ?>
+
+        <form action="register.php" method="POST" id="registerForm">
             
             <div class="input-group">
                 <label>Username</label>
-                <input type="text" name="username" required>
+                <!-- FIX: name="name" must match $_POST['name'] in PHP above -->
+                <input type="text" name="name" required>
             </div>
 
             <div class="input-group">
@@ -100,10 +120,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="input-group">
-                <label>Role</label>
+                <label>I want to</label>
                 <select name="role">
-                    <option value="Buyer">Buyer</option>
-                    <option value="Seller">Seller</option>
+                    <option value="Buyer">Buy items</option>
+                    <option value="Seller">Sell items</option>
                 </select>
             </div>
 
@@ -111,15 +131,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label>Password</label>
                 <input type="password" name="password" id="password" required>
                 <span class="toggle-password" id="togglePass1" onclick="togglePassword('password', 'togglePass1')">Show</span>
-                <div id="pass-error" class="error-msg"></div>
             </div>
 
             <button type="submit" class="btn-primary">Create Account</button>
         </form>
 
         <div class="auth-links">
-            <p>Already have an account? <a href="login.php">Log In</a></p>
+            <p>Already have an account? <a href="login.php">Log in</a></p>
         </div>
+
     </div>
 
     <script src="assets/js/scripts.js"></script>

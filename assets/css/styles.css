@@ -1,5 +1,26 @@
-/* GLOBAL STYLES */
-/* Mobile-Responsive Layout Rules */
+/* Global Body Styles */
+body { 
+    font-family: Arial, sans-serif; 
+    background-color: #f4f7f6; 
+    margin: 0; 
+    padding: 20px; 
+}
+
+/* The Top Navigation Bar Fix */
+.navbar { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background: white; 
+    padding: 15px 30px; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+    margin-bottom: 30px; 
+}
+.navbar h1 { margin: 0; color: #333; font-size: 24px; }
+.nav-links a { text-decoration: none; color: #007bff; font-weight: bold; margin-left: 20px; }
+
+/* Your Flexbox Layout for the Products */
 .product-grid { 
     display: flex; 
     flex-wrap: wrap; 
@@ -7,20 +28,26 @@
     justify-content: center; 
 }
 
+/* Your Product Cards (Added hover effect) */
 .product-card { 
     border: 1px solid #ccc; 
     padding: 15px; 
     border-radius: 8px; 
     width: 100%; 
     max-width: 300px; 
-    background: #f9f9f9; 
+    background: white; 
     box-sizing: border-box;
+    transition: transform 0.2s, box-shadow 0.2s; 
+}
+.product-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
 }
 
-.price { color: green; font-size: 1.2em; font-weight: bold; }
+/* Typography & Buttons */
+.price { color: green; font-size: 1.2em; font-weight: bold; margin-top: 10px; }
 .seller-badge { font-size: 0.8em; color: #666; }
 
-/* Contact Seller Button */
 .btn-contact-seller {
     display: block;
     text-align: center;
@@ -33,4 +60,10 @@
     font-family: sans-serif;
     font-weight: bold;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: 0.3s;
 }
+.btn-contact-seller:hover {
+    background-color: #218838;
+}
+
+.empty-state { text-align: center; color: #777; width: 100%; }
