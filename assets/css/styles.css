@@ -66,4 +66,36 @@ body {
     background-color: #218838;
 }
 
+/* Fix for the single listing page image */
+.listing-image {
+    width: 100%; 
+    height: 400px; 
+    object-fit: contain; /* <--- THIS IS THE MAGIC WORD */
+    border-radius: 8px;
+    background-color: #f8f9fa; 
+}
+
+/* Optional: Fix for your index.php product cards (if you need it) */
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Add this new class for our Buy Button */
+.btn-buy {
+    background-color: #28a745; /* Success Green */
+    color: white;
+    font-size: 18px;
+    padding: 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    transition: background 0.2s;
+}
+
+.btn-buy:hover {
+    background-color: #218838;
+}
+
 .empty-state { text-align: center; color: #777; width: 100%; }

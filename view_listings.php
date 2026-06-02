@@ -2,13 +2,13 @@
 require_once 'includes/connect_db.php';
 session_start();
 
-// 1. Make sure we actually have an ID in the URL
+// Make sure we actually have an ID in the URL
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("Product ID is missing.");
 }
 $product_id = $_GET['id'];
 
-// 2. Fetch the product AND the seller's username using a JOIN
+// Fetch the product AND the seller's username
 try {
     $sql = "SELECT p.*, u.username 
             FROM products p 
@@ -21,8 +21,26 @@ try {
     if (!$product) {
         die("This product does not exist or has been removed.");
     }
+
+    // Fetch all reviews for this specific seller
+    $review_sql = "SELECT r.*, u.username AS reviewer_name 
+                   FROM user_reviews r 
+                   JOIN users u ON r.reviewer_id = u.id 
+                   WHERE r.user_reviewed_id = ? 
+                   ORDER BY r.created_at DESC";
+    $review_stmt = $pdo->prepare($review_sql);
+    $review_stmt->execute([$product['seller_id']]);
+    $reviews = $review_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Calculate the average star rating
+    $avg_rating = "No reviews yet";
+    if (count($reviews) > 0) {
+        $total_stars = array_sum(array_column($reviews, 'rating'));
+        $avg_rating = round($total_stars / count($reviews), 1) . " / 5 ⭐";
+    }
+
 } catch (PDOException $e) {
-    die("Error loading product: " . $e->getMessage());
+    die("Error loading page data: " . $e->getMessage());
 }
 ?>
 
@@ -62,9 +80,27 @@ try {
             <h2 class="listing-price">R <?php echo number_format($product['price'], 2); ?></h2>
             
             <p class="listing-meta">
-                <strong>Listed by:</strong> <?php echo htmlspecialchars($product['username']); ?><br>
+                <strong>Listed by:</strong> <?php echo htmlspecialchars($product['username']); ?> 
+                <span style="color: #ffc107; font-weight: bold; margin-left: 10px;"><?php echo $avg_rating; ?></span><br>
                 <strong>Date:</strong> <?php echo date('F j, Y', strtotime($product['created_at'])); ?>
             </p>
+
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if ($_SESSION['user_id'] != $product['seller_id']): ?>
+                    <form action="purchase.php" method="POST" style="margin-top: 15px;">
+                        <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                        <button type="submit" class="btn-block btn-buy">🛒 Buy Now</button>
+                    </form>
+                <?php else: ?>
+                    <div style="background: #e2e3e5; color: #383d41; padding: 15px; border-radius: 5px; text-align: center; margin-bottom: 20px; font-weight: bold; margin-top: 15px;">
+                        This is your listing.
+                    </div>
+                <?php endif; ?>
+            <?php else: ?>
+                 <div class="alert-warning" style="margin-bottom: 20px; margin-top: 15px;">
+                    You must be <a href="login.php">logged in</a> to purchase this item.
+                </div>
+            <?php endif; ?>
 
             <hr class="divider">
             
@@ -123,5 +159,28 @@ try {
         </div>
     </div>
 
+    <div style="max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <h3 class="section-title" style="margin-top: 0;">Seller Review History (<?php echo count($reviews); ?>)</h3>
+        
+        <?php if (count($reviews) > 0): ?>
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <?php foreach ($reviews as $rev): ?>
+                    <div style="border-left: 4px solid #007bff; background: #f8f9fa; padding: 15px; border-radius: 0 8px 8px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <strong><?php echo htmlspecialchars($rev['reviewer_name']); ?></strong>
+                            <span style="color: #ffc107;">
+                                <?php echo str_repeat('⭐', $rev['rating']); ?>
+                            </span>
+                        </div>
+                        <p style="margin: 0; color: #555; font-size: 14px;"><?php echo htmlspecialchars($rev['review_text']); ?></p>
+                        <small style="color: #999; font-size: 11px;"><?php echo date('Y-m-d', strtotime($rev['created_at'])); ?></small>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p class="text-muted" style="margin-top: 15px;">This seller hasn't received any feedback yet.</p>
+        <?php endif; ?>
+    </div>
+    
 </body>
 </html>
