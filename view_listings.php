@@ -1,46 +1,55 @@
 <?php
+
+// SYSTEM INITIALIZATION & CORE DEPENDENCIES
 require_once 'includes/connect_db.php';
 session_start();
 
-// Make sure we actually have an ID in the URL
+// Track current session user, if logged in
+$current_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+// INPUT VALIDATION 
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    die("Product ID is missing.");
+    die("Data Routing Error: Product identification parameter is missing.");
 }
-$product_id = $_GET['id'];
+$product_id = intval($_GET['id']); // Convert to integer for basic sanitization
 
-// Fetch the product AND the seller's username
+// DATABASE QUERIES & METRIC CALCULATIONS
 try {
-    $sql = "SELECT p.*, u.username 
-            FROM products p 
-            JOIN users u ON p.seller_id = u.id 
-            WHERE p.id = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$product_id]);
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    // fetch the core product information along with the creator's username
+    $product_query = "SELECT p.*, u.username 
+                      FROM products p 
+                      JOIN users u ON p.seller_id = u.id 
+                      WHERE p.id = ?";
+                      
+    $product_stmt = $pdo->prepare($product_query);
+    $product_stmt->execute([$product_id]);
+    $product = $product_stmt->fetch(PDO::FETCH_ASSOC);
 
+    // stop execution instantly if the product does not exist
     if (!$product) {
-        die("This product does not exist or has been removed.");
+        die("Record Error: This item is unavailable, sold, or has been removed.");
     }
 
-    // Fetch all reviews for this specific seller
-    $review_sql = "SELECT r.*, u.username AS reviewer_name 
-                   FROM user_reviews r 
-                   JOIN users u ON r.reviewer_id = u.id 
-                   WHERE r.user_reviewed_id = ? 
-                   ORDER BY r.created_at DESC";
-    $review_stmt = $pdo->prepare($review_sql);
+    // fetch all feedback history posted about this specific merchant
+    $review_query = "SELECT r.*, u.username AS reviewer_name 
+                     FROM user_reviews r 
+                     JOIN users u ON r.reviewer_id = u.id 
+                     WHERE r.user_reviewed_id = ? 
+                     ORDER BY r.created_at DESC";
+                     
+    $review_stmt = $pdo->prepare($review_query);
     $review_stmt->execute([$product['seller_id']]);
     $reviews = $review_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Calculate the average star rating
+    // calculate the average rating for the merchant profile
     $avg_rating = "No reviews yet";
     if (count($reviews) > 0) {
         $total_stars = array_sum(array_column($reviews, 'rating'));
         $avg_rating = round($total_stars / count($reviews), 1) . " / 5 ⭐";
     }
 
-} catch (PDOException $e) {
-    die("Error loading page data: " . $e->getMessage());
+} catch (PDOException $error) {
+    die("Critical Database Connection Fault: " . $error->getMessage());
 }
 ?>
 
@@ -56,11 +65,12 @@ try {
 <body>
 
     <div class="navbar">
-        <h1> YEBO Marketplace</h1>
+        <h1>YEBO Marketplace</h1>
         <div class="nav-links">
             <a href="index.php" style="margin-right: 15px; color: #333;">&larr; Back to Home</a>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="messages.php" style="margin-right: 15px; color: #007bff; font-weight: bold;"> My Messages</a>
+            
+            <?php if ($current_user_id): ?>
+                <a href="messages.php" style="margin-right: 15px; color: #007bff; font-weight: bold;">My Messages</a>
                 <a href="dashboard.php">My Dashboard</a>
                 <a href="logout.php" style="color: #dc3545;">Log Out</a>
             <?php else: ?>
@@ -69,6 +79,7 @@ try {
             <?php endif; ?>
         </div>
     </div>
+
 
     <div class="listing-container">
         
@@ -86,19 +97,19 @@ try {
                 <strong>Date:</strong> <?php echo date('F j, Y', strtotime($product['created_at'])); ?>
             </p>
 
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <?php if ($_SESSION['user_id'] != $product['seller_id']): ?>
+            <?php if ($current_user_id): ?>
+                <?php if ($current_user_id != $product['seller_id']): ?>
                     <form action="purchase.php" method="POST" style="margin-top: 15px;">
                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                         <button type="submit" class="btn-block btn-buy">🛒 Buy Now</button>
                     </form>
                 <?php else: ?>
-                    <div style="background: #e2e3e5; color: #383d41; padding: 15px; border-radius: 5px; text-align: center; margin-bottom: 20px; font-weight: bold; margin-top: 15px;">
+                    <div style="background: #e2e3e5; color: #383d41; padding: 15px; border-radius: 5px; text-align: center; margin-top: 15px; font-weight: bold;">
                         This is your listing.
                     </div>
                 <?php endif; ?>
             <?php else: ?>
-                 <div class="alert-warning" style="margin-bottom: 20px; margin-top: 15px;">
+                <div class="alert-warning" style="margin-top: 15px; margin-bottom: 20px;">
                     You must be <a href="login.php">logged in</a> to purchase this item.
                 </div>
             <?php endif; ?>
@@ -113,16 +124,17 @@ try {
             <hr class="divider">
 
             <h3 class="section-title">Message the Seller</h3>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <?php if ($_SESSION['user_id'] != $product['seller_id']): ?>
+            <?php if ($current_user_id): ?>
+                <?php if ($current_user_id != $product['seller_id']): ?>
                     <form action="messages.php" method="POST">
                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                         <input type="hidden" name="receiver_id" value="<?php echo $product['seller_id']; ?>">
+                        
                         <textarea name="reply_text" rows="4" class="form-input" placeholder="Hi, is this still available?" required></textarea>
                         <button type="submit" class="btn-contact-seller btn-block">Send Message</button>
                     </form>
                 <?php else: ?>
-                    <p class="text-muted" style="color: #666;">You cannot message yourself about your own listing.</p>
+                    <p style="color: #666; font-style: italic;">You cannot message yourself about your own listing.</p>
                 <?php endif; ?>
             <?php else: ?>
                 <div class="alert-warning">
@@ -133,9 +145,8 @@ try {
             <hr class="divider">
 
             <h3 class="section-title">Rate this Seller</h3>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                
-                <?php if ($_SESSION['user_id'] != $product['seller_id']): ?>
+            <?php if ($current_user_id): ?>
+                <?php if ($current_user_id != $product['seller_id']): ?>
                     <div class="review-box">
                         <form action="submit_review.php" method="POST">
                             <input type="hidden" name="user_reviewed_id" value="<?php echo $product['seller_id']; ?>">
@@ -156,9 +167,8 @@ try {
                         </form>
                     </div>
                 <?php else: ?>
-                    <p class="text-muted">You cannot review your own listing.</p>
+                    <p style="color: #666; font-style: italic;">You cannot review your own listing.</p>
                 <?php endif; ?>
-
             <?php else: ?>
                 <div class="alert-warning">
                     You must be <a href="login.php">logged in</a> to leave a review.
@@ -167,6 +177,7 @@ try {
 
         </div>
     </div>
+
 
     <div style="max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
         <h3 class="section-title" style="margin-top: 0;">Seller Review History (<?php echo count($reviews); ?>)</h3>
@@ -187,7 +198,7 @@ try {
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <p class="text-muted" style="margin-top: 15px;">This seller hasn't received any feedback yet.</p>
+            <p style="color: #777; font-style: italic; margin-top: 15px;">This seller hasn't received any feedback yet.</p>
         <?php endif; ?>
     </div>
     

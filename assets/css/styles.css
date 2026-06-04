@@ -6,7 +6,7 @@ body {
     padding: 20px; 
 }
 
-/* The Top Navigation Bar Fix */
+/* The Top Navigation Bar */
 .navbar { 
     display: flex; 
     justify-content: space-between; 
@@ -17,10 +17,26 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
     margin-bottom: 30px; 
 }
-.navbar h1 { margin: 0; color: #333; font-size: 24px; }
-.nav-links a { text-decoration: none; color: #007bff; font-weight: bold; margin-left: 20px; }
 
-/* Your Flexbox Layout for the Products */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+}
+
+.navbar h1 { 
+    margin: 0; 
+    color: #333; 
+    font-size: 24px; 
+}
+
+.nav-links a { 
+    text-decoration: none; 
+    color: #007bff; 
+    font-weight: bold; 
+}
+
+/* Flexbox Layout for the Products */
 .product-grid { 
     display: flex; 
     flex-wrap: wrap; 
@@ -28,7 +44,7 @@ body {
     justify-content: center; 
 }
 
-/* Your Product Cards (Added hover effect) */
+/* Product Cards */
 .product-card { 
     border: 1px solid #ccc; 
     padding: 15px; 
@@ -39,63 +55,75 @@ body {
     box-sizing: border-box;
     transition: transform 0.2s, box-shadow 0.2s; 
 }
+
 .product-card:hover { 
     transform: translateY(-5px); 
     box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
 }
 
-/* Typography & Buttons */
-.price { color: green; font-size: 1.2em; font-weight: bold; margin-top: 10px; }
-.seller-badge { font-size: 0.8em; color: #666; }
-
-.btn-contact-seller {
-    display: block;
-    text-align: center;
-    background-color: #28a745;
-    color: white;
-    padding: 12px 15px;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-top: 15px;
-    font-family: sans-serif;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: 0.3s;
-}
-.btn-contact-seller:hover {
-    background-color: #218838;
-}
-
-/* Fix for the single listing page image */
-.listing-image {
-    width: 100%; 
-    height: 400px; 
-    object-fit: contain; /* <--- THIS IS THE MAGIC WORD */
-    border-radius: 8px;
-    background-color: #f8f9fa; 
-}
-
-/* Optional: Fix for your index.php product cards (if you need it) */
 .product-card img {
     width: 100%;
     height: 200px;
     object-fit: cover;
 }
 
-/* Add this new class for our Buy Button */
-.btn-buy {
-    background-color: #28a745; /* Success Green */
+/* Typography, Badges & Empty States */
+.price { color: green; font-size: 1.2em; font-weight: bold; margin-top: 10px; }
+.seller-badge { font-size: 0.8em; color: #666; }
+.empty-state { text-align: center; color: #777; width: 100%; }
+
+/* Buttons & Single Listing Controls */
+.btn-contact-seller, .btn-buy {
+    display: block;
+    text-align: center;
     color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-contact-seller {
+    background-color: #28a745;
+    padding: 12px 15px;
+    margin-top: 15px;
+}
+.btn-contact-seller:hover { background-color: #218838; }
+
+.btn-buy {
+    background-color: #007bff; 
     font-size: 18px;
     padding: 15px;
-    font-weight: bold;
-    border-radius: 5px;
     margin-bottom: 20px;
-    transition: background 0.2s;
+}
+.btn-buy:hover { background-color: #0056b3; }
+
+.listing-image {
+    width: 100%; 
+    height: 400px; 
+    object-fit: contain; 
+    border-radius: 8px;
+    background-color: #f8f9fa; 
 }
 
-.btn-buy:hover {
-    background-color: #218838;
-}
 
-.empty-state { text-align: center; color: #777; width: 100%; }
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    .navbar {
+        flex-direction: column; 
+        text-align: center;
+        gap: 15px;
+        padding: 15px 10px;
+    }
+    .nav-links {
+        justify-content: center; 
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}

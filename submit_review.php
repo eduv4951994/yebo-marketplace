@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     die("You must be logged in to leave a review.");
 }
 
-// Check if the form was actually submitted
+// check if the form was actually submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reviewer_id = $_SESSION['user_id'];
     $user_reviewed_id = $_POST['user_reviewed_id'];
@@ -19,14 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("You cannot review yourself!");
     }
 
-    // Insert the review into the database
+    // insert the review into the database
     try {
         $sql = "INSERT INTO user_reviews (reviewer_id, user_reviewed_id, rating, review_text) 
                 VALUES (?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$reviewer_id, $user_reviewed_id, $rating, $review_text]);
         
-        // Redirect back to the dashboard (or wherever makes sense)
+        // Redirect back to the dashboard
         header("Location: dashboard.php?msg=ReviewSubmitted");
         exit;
     } catch (PDOException $e) {
