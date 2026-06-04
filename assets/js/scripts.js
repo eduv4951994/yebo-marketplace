@@ -1,4 +1,4 @@
-// Show/Hide Password Toggle
+// Show/Hide Password toggle
 function togglePassword(inputId, toggleTextId) {
     const input = document.getElementById(inputId);
     const toggleText = document.getElementById(toggleTextId);
@@ -11,18 +11,18 @@ function togglePassword(inputId, toggleTextId) {
     }
 }
 
-// Simple Registration Check (Just checks length now)
+// simple registration check (check length of password)
 function validateRegistration(event) {
     const pass = document.getElementById('password').value;
     const errorMsg = document.getElementById('pass-error');
 
-    errorMsg.style.display = "none"; // Hide error by default
+    errorMsg.style.display = "none"; // hide error, default
 
-    // Check if password is at least 4 characters
+    // check for password is at least 4 characters
     if (pass.length < 4) {
         errorMsg.innerText = "Password must be at least 6 characters.";
         errorMsg.style.display = "block";
-        event.preventDefault(); // Stop the form from submitting
+        event.preventDefault(); // stop the form from submitting
         return false;
     }
     

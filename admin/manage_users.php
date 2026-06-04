@@ -5,7 +5,7 @@ require_once '../includes/auth.php';
 
 check_login();
 
-// Strict Admin Gate
+// strict Admin gate
 if ($_SESSION['user_role'] !== 'Admin') {
     header("Location: ../dashboard.php");
     exit();
@@ -14,7 +14,7 @@ if ($_SESSION['user_role'] !== 'Admin') {
 $admin_id = $_SESSION['user_id'];
 $all_users = [];
 
-// PROCESS ROLE UPDATE ACTION (Aligned to 'role' column)
+// PROCESS ROLE UPDATE ACTION 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_role_user_id'])) {
     $target_user_id = $_POST['update_role_user_id'];
     $new_role       = $_POST['new_role'];
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_user_id'])) {
     }
 }
 
-// FETCH ALL USERS FROM THE DATABASE (Aligned to 'username' and 'role')
+// FETCH ALL USERS FROM THE DATABASE ('username' & 'role')
 try {
     $sql = "SELECT id, username, role, created_at FROM users ORDER BY created_at DESC";
     $stmt = $pdo->query($sql);

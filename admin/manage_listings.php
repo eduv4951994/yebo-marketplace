@@ -5,7 +5,7 @@ require_once '../includes/auth.php';
 
 check_login();
 
-// Strict Admin Gate
+// strict Admin gate
 if ($_SESSION['user_role'] !== 'Admin') {
     header("Location: ../dashboard.php");
     exit();
@@ -14,7 +14,7 @@ if ($_SESSION['user_role'] !== 'Admin') {
 $admin_name = $_SESSION['username'] ?? $_SESSION['user_name'] ?? 'Admin';
 $all_products = [];
 
-// FETCH EVERY SINGLE LISTING ON THE PLATFORM (Aligned to use 'username')
+// FETCH EVERY SINGLE LISTING ON THE PLATFORM 
 try {
     $sql = "SELECT products.*, users.username AS seller_name 
             FROM products 
@@ -27,7 +27,7 @@ try {
     die("Error loading marketplace catalog: " . $e->getMessage());
 }
 
-// PROCESS ADMIN DELETE ACTION
+// Admin delete action process
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['admin_delete_id'])) {
     $delete_id = $_POST['admin_delete_id'];
     try {
@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['admin_delete_id'])) {
 <body style="padding: 20px; font-family: Arial, sans-serif;">
 
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; padding-bottom: 15px; margin-bottom: 20px;">
-        <h1>📦 Global Listing Moderation</h1>
+        <h1> Global Listing Moderation</h1>
         <p><a href="index.php" style="font-weight: bold;">← Back to Admin Center</a></p>
     </div>
 

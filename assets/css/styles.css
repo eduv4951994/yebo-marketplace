@@ -67,7 +67,7 @@ body {
     object-fit: cover;
 }
 
-/* Typography, Badges & Empty States */
+/* Typography & Badges & Empty States */
 .price { color: green; font-size: 1.2em; font-weight: bold; margin-top: 10px; }
 .seller-badge { font-size: 0.8em; color: #666; }
 .empty-state { text-align: center; color: #777; width: 100%; }

@@ -1,13 +1,13 @@
 <?php
 // ROUTING & SECURITY CHECK
-// Because this file is inside the /admin folder, we have to go UP one level (../) to find includes
+
 require_once '../includes/connect_db.php';
 require_once '../includes/auth.php';
 
-// Secure the page - ensure they are logged in
+// secure the page make sure thatthey are logged in
 check_login();
 
-// Strict RBAC Guard: If they aren't an Admin, kick them back to the regular dashboard
+// RBAC Guard --> if they arent an Admin take them back to noraml dashboard
 if ($_SESSION['user_role'] !== 'Admin') {
     header("Location: ../dashboard.php");
     exit();
@@ -24,7 +24,7 @@ try {
     $user_count_stmt = $pdo->query("SELECT COUNT(*) FROM users");
     $total_users = $user_count_stmt->fetchColumn();
 
-    // Count total active marketplace items
+    // count total active marketplace items
     $product_count_stmt = $pdo->query("SELECT COUNT(*) FROM products");
     $total_products = $product_count_stmt->fetchColumn();
 
