@@ -28,6 +28,7 @@ try {
         <h1>YEBO Marketplace</h1>
         <div class="nav-links">
             <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="messages.php" style="margin-right: 15px; color: #007bff; font-weight: bold;">Messages</a>
                 <a href="dashboard.php">My Dashboard</a>
                 <a href="logout.php" style="color: #dc3545;">Log Out</a>
             <?php else: ?>
