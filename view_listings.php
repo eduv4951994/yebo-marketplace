@@ -60,6 +60,7 @@ try {
         <div class="nav-links">
             <a href="index.php" style="margin-right: 15px; color: #333;">&larr; Back to Home</a>
             <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="messages.php" style="margin-right: 15px; color: #007bff; font-weight: bold;"> My Messages</a>
                 <a href="dashboard.php">My Dashboard</a>
                 <a href="logout.php" style="color: #dc3545;">Log Out</a>
             <?php else: ?>
@@ -113,8 +114,16 @@ try {
 
             <h3 class="section-title">Message the Seller</h3>
             <?php if (isset($_SESSION['user_id'])): ?>
-                <textarea rows="4" class="form-input" placeholder="Hi, is this still available?"></textarea>
-                <button class="btn-contact-seller btn-block">Send Message</button>
+                <?php if ($_SESSION['user_id'] != $product['seller_id']): ?>
+                    <form action="messages.php" method="POST">
+                        <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                        <input type="hidden" name="receiver_id" value="<?php echo $product['seller_id']; ?>">
+                        <textarea name="reply_text" rows="4" class="form-input" placeholder="Hi, is this still available?" required></textarea>
+                        <button type="submit" class="btn-contact-seller btn-block">Send Message</button>
+                    </form>
+                <?php else: ?>
+                    <p class="text-muted" style="color: #666;">You cannot message yourself about your own listing.</p>
+                <?php endif; ?>
             <?php else: ?>
                 <div class="alert-warning">
                     You must be <a href="login.php">logged in</a> to message sellers.
