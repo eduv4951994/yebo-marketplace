@@ -4,18 +4,18 @@
 require_once 'includes/connect_db.php';
 session_start();
 
-// Track current session user, if logged in
+// track current session user if logged in
 $current_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 // INPUT VALIDATION 
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("Data Routing Error: Product identification parameter is missing.");
 }
-$product_id = intval($_GET['id']); // Convert to integer for basic sanitization
+$product_id = intval($_GET['id']); // convert to integer for simple sanitization
 
 // DATABASE QUERIES & METRIC CALCULATIONS
 try {
-    // fetch the core product information along with the creator's username
+    // fetch core product information along with the creators username
     $product_query = "SELECT p.*, u.username 
                       FROM products p 
                       JOIN users u ON p.seller_id = u.id 

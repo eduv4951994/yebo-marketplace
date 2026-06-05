@@ -2,7 +2,7 @@
 require_once 'includes/connect_db.php';
 session_start();
 
-// Fetch all active products for the storefront
+// fetch all active products for the storefront
 try {
     $sql = "SELECT * FROM products WHERE status = 'Available' ORDER BY created_at DESC";
     $stmt = $pdo->prepare($sql);
@@ -65,3 +65,4 @@ try {
 
 </body>
 </html>
+

@@ -1,5 +1,5 @@
 <?php
-// Connect to the database and start tracking the session
+// connect to the database and start tracking the session
 require_once 'includes/connect_db.php';
 session_start();
 
@@ -10,7 +10,7 @@ $success = "";
 // Check if the user submitted the signup form
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Collect the text fields + trim off any accidental extra spaces
+    // collect the text fields + trim off any accidental extra spaces
     $name     = trim($_POST['name'] ?? '');
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';

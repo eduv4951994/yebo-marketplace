@@ -20,30 +20,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $description = trim($_POST['description']);
     $price       = trim($_POST['price']);
     
-    // Set a default image path just in case they don't upload one
+    //  default image path in case they dont upload one
     $final_image_path = "assets/uploads/default.png";
 
     // HANDLE THE IMAGE UPLOAD LOGIC
-    // Check if a file was actually uploaded and has no errors
+    // check if a file was actually uploaded and has no errors
     if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) {
         
         $allowed_types = ['jpg', 'jpeg', 'png', 'webp'];
         $file_name     = $_FILES['product_image']['name'];
         $file_tmp_name = $_FILES['product_image']['tmp_name'];
         
-        // Get the file extension (e.g., 'jpg') and make it lowercase
+        // get file extension and make lowercase
         $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-        // Security Check: Is it a valid image type?
+        // Security Check: is a valid image type?
         if (in_array($file_extension, $allowed_types)) {
             
-            // Create a unique file name so "iphone.jpg" doesn't overwrite someone else's "iphone.jpg"
+            // create unique file name so images dont overwrite other 
             $new_file_name = uniqid("yebo_", true) . "." . $file_extension;
             $upload_destination = "assets/uploads/" . $new_file_name;
 
-            // Move the file from a temporary server location to our official uploads folder
+            // move file from temporary server location to official uploads folder
             if (move_uploaded_file($file_tmp_name, $upload_destination)) {
-                // Success! Update our database variable to point to the new file
+                // Success! update database variable to point to the new file
                 $final_image_path = $upload_destination;
             } else {
                 if (!is_dir('assets/uploads')){
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // SAVE TO DATABASE (If there are no errors)
+    // SAVE TO DATABASE 
     if (empty($error)) {
         try {
             $sql = "INSERT INTO products (seller_id, title, description, price, image_path) 

@@ -1,9 +1,9 @@
 <?php
-// Connect to the database and start tracking the session
+// connect to the database and start tracking the session
 require_once 'includes/connect_db.php';
 session_start();
 
-// Guard- if the user isnt logged in stop 
+// Guard:if the user isnt logged in stop 
 if (!isset($_SESSION['user_id'])) {
     die("Error: You must be logged in to purchase an item.");
 }

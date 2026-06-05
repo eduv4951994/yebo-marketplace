@@ -23,7 +23,7 @@ try {
     $stmt->execute(['id' => $product_id, 'seller_id' => $current_user_id]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Security Guard: If the product doesn't exist OR belongs to a different user, kick them out
+    // Security Guard: if the product doesnt exist or belongs to a different user kick them out
     if (!$product) {
         die("Error: You do not have permission to edit this listing, or it does not exist.");
     }
@@ -37,10 +37,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $description = trim($_POST['description']);
     $price       = trim($_POST['price']);
     
-    // Default to keeping the old image path if they don't upload a new one
+    // default keep the old image path if they dont upload a new one
     $final_image_path = $product['image_path'];
 
-    // HANDLE NEW IMAGE UPLOAD (OPTIONAL)
+    // HANDLE NEW IMAGE UPLOAD
     if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) {
         $allowed_types  = ['jpg', 'jpeg', 'png', 'webp'];
         $file_name      = $_FILES['product_image']['name'];
@@ -54,8 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (move_uploaded_file($file_tmp_name, $upload_destination)) {
                 $final_image_path = $upload_destination;
                 
-                // Optional: You could write code here to delete the old file off the server,
-                // but keeping it simple avoids accidentally losing data right now!
             } else {
                 $error = "Failed to save the new image.";
             }
@@ -83,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $success = "Listing updated successfully!";
             
-            // Refresh the local array data so the form shows the updated text immediately
+            // refresh the local array data so the form shows the updated text immediately
             $product['title']       = $title;
             $product['description'] = $description;
             $product['price']       = $price;

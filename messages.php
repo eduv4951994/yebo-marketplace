@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 require_once 'includes/connect_db.php';
 session_start();
 
-// Force login
+// force login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -26,12 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['reply_text'])) {
         $stmt->execute([$my_id, $receiver_id, $product_id, $reply_text]);
     }
 
-    // Refresh to show the new message instantly
+    // refresh to show the new message
     header("Location: messages.php?product_id=$product_id&chat_with=$receiver_id");
     exit();
 }
 
-// Check if a specific chat thread is opened
+// check if specific chat thread is opened
 $is_thread_open = isset($_GET['product_id']) && isset($_GET['chat_with']);
 ?>
 
@@ -113,12 +113,11 @@ $is_thread_open = isset($_GET['product_id']) && isset($_GET['chat_with']);
             $p_stmt->execute([$pid]);
             $prod = $p_stmt->fetch(PDO::FETCH_ASSOC);
 
-            // FIXED: Added missing $ sign here to resolve the undefined constant error
             $u_stmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
             $u_stmt->execute([$with_id]);
             $partner = $u_stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Fetch the chat history
+            // get the chat history
             $chat_sql = "SELECT m.* FROM messages m 
                          WHERE m.product_id = ? 
                          AND ((m.sender_id = ? AND m.receiver_id = ?) OR (m.sender_id = ? AND m.receiver_id = ?))
