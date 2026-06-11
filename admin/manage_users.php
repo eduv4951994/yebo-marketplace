@@ -76,7 +76,7 @@ try {
 <body style="padding: 20px; font-family: Arial, sans-serif;">
 
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; padding-bottom: 15px; margin-bottom: 20px;">
-        <h1>👥 System User Management</h1>
+        <h1> System User Management</h1>
         <p><a href="index.php" style="font-weight: bold;">← Back to Admin Center</a></p>
     </div>
 
@@ -88,7 +88,7 @@ try {
                 <th>User ID</th>
                 <th>Username</th>
                 <th>Current Role</th>
-                <th>Account Status / Actions</th>
+                <th>Date Created</th> <th>Account Status / Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -99,13 +99,16 @@ try {
                     <td>
                         <form action="manage_users.php" method="POST" style="display: inline;">
                             <input type="hidden" name="update_role_user_id" value="<?php echo $user['id']; ?>">
-                            <select name="new_role" onchange="this.form.submit()" <?php echo ($user['id'] == $admin_id) ? 'disabled' : ''; ?> style="padding: 5px变量;">
+                            <select name="new_role" onchange="this.form.submit()" <?php echo ($user['id'] == $admin_id) ? 'disabled' : ''; ?> style="padding: 5px;">
                                 <option value="Buyer" <?php echo ($user['role'] === 'Buyer') ? 'selected' : ''; ?>>Buyer</option>
                                 <option value="Seller" <?php echo ($user['role'] === 'Seller') ? 'selected' : ''; ?>>Seller</option>
                                 <option value="Admin" <?php echo ($user['role'] === 'Admin') ? 'selected' : ''; ?>>Admin</option>
                             </select>
                         </form>
                     </td>
+                    
+                    <td><?php echo date('Y-m-d H:i', strtotime($user['created_at'])); ?></td>
+                    
                     <td>
                         <?php if ($user['id'] == $admin_id): ?>
                             <span style="color: #007bff; font-weight: bold;">Active Session (You)</span>
@@ -125,3 +128,4 @@ try {
 
 </body>
 </html>
+

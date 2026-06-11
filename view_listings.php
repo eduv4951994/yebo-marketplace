@@ -99,7 +99,7 @@ try {
 
             <?php if ($current_user_id): ?>
                 <?php if ($current_user_id != $product['seller_id']): ?>
-                    <form action="purchase.php" method="POST" style="margin-top: 15px;">
+                    <form action="purchase_sim.php" method="POST" style="margin-top: 15px;">
                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                         <button type="submit" class="btn-block btn-buy">🛒 Buy Now</button>
                     </form>
@@ -139,39 +139,6 @@ try {
             <?php else: ?>
                 <div class="alert-warning">
                     You must be <a href="login.php">logged in</a> to message sellers.
-                </div>
-            <?php endif; ?>
-
-            <hr class="divider">
-
-            <h3 class="section-title">Rate this Seller</h3>
-            <?php if ($current_user_id): ?>
-                <?php if ($current_user_id != $product['seller_id']): ?>
-                    <div class="review-box">
-                        <form action="submit_review.php" method="POST">
-                            <input type="hidden" name="user_reviewed_id" value="<?php echo $product['seller_id']; ?>">
-                            
-                            <label class="form-label">Rating:</label>
-                            <select name="rating" required class="form-input">
-                                <option value="5">⭐⭐⭐⭐⭐ (5/5 - Great)</option>
-                                <option value="4">⭐⭐⭐⭐ (4/5 - Good)</option>
-                                <option value="3">⭐⭐⭐ (3/5 - Okay)</option>
-                                <option value="2">⭐⭐ (2/5 - Poor)</option>
-                                <option value="1">⭐ (1/5 - Terrible)</option>
-                            </select>
-
-                            <label class="form-label">Comment:</label>
-                            <textarea name="review_text" rows="3" required class="form-input" placeholder="How was your experience?"></textarea>
-
-                            <button type="submit" class="btn-contact-seller btn-block btn-blue">Submit Review</button>
-                        </form>
-                    </div>
-                <?php else: ?>
-                    <p style="color: #666; font-style: italic;">You cannot review your own listing.</p>
-                <?php endif; ?>
-            <?php else: ?>
-                <div class="alert-warning">
-                    You must be <a href="login.php">logged in</a> to leave a review.
                 </div>
             <?php endif; ?>
 

@@ -5,14 +5,13 @@ require_once '../includes/connect_db.php';
 require_once '../includes/auth.php';
 
 // secure the page make sure thatthey are logged in
-check_login();
+// check_login();
 
-// RBAC Guard --> if they arent an Admin take them back to noraml dashboard
-if ($_SESSION['user_role'] !== 'Admin') {
-    header("Location: ../dashboard.php");
+
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'Admin') {
+    header("Location: ../login.php?error=access_denied");
     exit();
 }
-
 $admin_name = $_SESSION['username'];
 
 // FETCH ENTERPRISE SYSTEM METRICS

@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user = $stmt->fetch(PDO::ATTR_DEFAULT_FETCH_MODE ? PDO::FETCH_ASSOC : PDO::FETCH_ASSOC);
 
             // VERIFY THE PASSWORD WITH THE HASHED SAFE COPY
-            if ($user && password_verify($password, $user['password_hash'])) {  // password_verify()  unpacks hashed string and checks it
+            if ($user && password_verify($password, $user['password_hash'])) {  // password_verify() unpacks hashed string and checks it
                 
                 // set session variables 
                 $_SESSION['user_id']   = $user['id'];
@@ -46,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,18 +65,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .toggle-password { position: absolute; right: 12px; top: 35px; cursor: pointer; font-size: 14px; color: #007bff; font-weight: bold; user-select: none; }
         .auth-links { text-align: center; margin-top: 15px; font-size: 14px; }
         .auth-links a { color: #007bff; text-decoration: none; }
+
+        /* Error message box */
+        .error-box { background: #fff0f0; border: 1px solid #f5c6cb; color: #b04040; font-size: 14px; font-weight: bold; padding: 12px 14px; border-radius: 6px; margin-bottom: 20px; text-align: center; }
     </style>
 </head>
 <body>
 
     <div class="auth-card">
         <h2>Welcome Back</h2>
+
+        <!-- ERROR MESSAGE  -->
+        <?php if (!empty($error)): ?>
+            <div class="error-box"><?php echo $error; ?></div>
+        <?php endif; ?>
         
         <form action="login.php" method="POST">
             
             <div class="input-group">
                 <label>Email Address</label>
-                <input type="email" name="email" required>
+                
+                <input type="email" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
             </div>
 
             <div class="input-group">

@@ -28,3 +28,4 @@ function validateRegistration(event) {
     
     return true; 
 }
+
