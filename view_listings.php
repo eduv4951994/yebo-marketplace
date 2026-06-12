@@ -101,7 +101,7 @@ try {
                 <?php if ($current_user_id != $product['seller_id']): ?>
                     <form action="purchase_sim.php" method="POST" style="margin-top: 15px;">
                         <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                        <button type="submit" class="btn-block btn-buy">🛒 Buy Now</button>
+                        <button type="submit" class="btn-block btn-buy"> Buy Now</button>
                     </form>
                 <?php else: ?>
                     <div style="background: #e2e3e5; color: #383d41; padding: 15px; border-radius: 5px; text-align: center; margin-top: 15px; font-weight: bold;">
